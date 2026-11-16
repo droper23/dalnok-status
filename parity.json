@@ -1,0 +1,393 @@
+{
+  "product": "Dalnok",
+  "updated": "2026-11-16",
+  "milestone": "Phase 1 · M3",
+  "rubric": "Each feature is split into concrete steps. A verified step (backed by an automated test, the app's end-to-end self-test, or a measured benchmark) counts 1. An implemented-but-unverified step counts 0.5. Planned steps count 0. Feature % = step score ÷ steps. Overall parity weights features by priority (P0 = 3, P1 = 2, P2 = 1). A reference DAW's parity covers only the features that DAW has.",
+  "references": {
+    "logic": "Logic Pro",
+    "ableton": "Ableton Live",
+    "reaper": "REAPER",
+    "audacity": "Audacity"
+  },
+  "categories": [
+    "Engine & Playback", "Recording", "Editing", "Arrangement", "Mixing", "Plugins",
+    "Instruments & Effects", "MIDI", "Workflow & UI", "Project & Export", "Reliability & Performance"
+  ],
+  "screenshots": [
+    { "file": "screenshots/arrangement.png", "caption": "Arrangement during playback: waveforms, live track and master meters, playhead, status line with the output device." },
+    { "file": "screenshots/command-palette.png", "caption": "Command palette (⌘K): fuzzy search over every command, with its menu location and shortcut." },
+    { "file": "screenshots/empty-state.png", "caption": "Empty project: drop audio anywhere or press ⌘I." }
+  ],
+  "features": [
+    {
+      "id": "engine", "name": "Low-latency playback engine", "category": "Engine & Playback", "priority": "P0",
+      "refs": ["logic", "ableton", "reaper", "audacity"],
+      "why": "Everything else sits on it: glitch-free, low-latency playback under load.",
+      "steps": [
+        ["Core Audio output with an allocation-free, lock-free callback", "verified"],
+        ["Real-time safety checked by the compiler (and in CI)", "verified"],
+        ["Click-free play, pause, and seek (5 ms fades)", "verified"],
+        ["Multi-core processing graph", "todo"],
+        ["Disk streaming for very long sessions", "todo"]
+      ],
+      "evidence": "LivePath tests (click detection with mutation check); rt-effects CI job; live smoke test: 0 overloads, worst callback 47 µs of a 10.7 ms budget.",
+      "screenshot": "screenshots/arrangement.png"
+    },
+    {
+      "id": "devices", "name": "Audio device selection", "category": "Engine & Playback", "priority": "P0",
+      "refs": ["logic", "ableton", "reaper", "audacity"],
+      "why": "Pros switch between an interface (e.g. Scarlett) and speakers or headphones constantly.",
+      "steps": [
+        ["List output devices", "verified"],
+        ["Switch output device while running", "verified"],
+        ["Fall back to System Default when a device is unplugged", "implemented"],
+        ["Input device selection", "todo"],
+        ["Buffer size and latency control", "todo"]
+      ],
+      "evidence": "Devices tests; self-test switches devices through the Audio menu."
+    },
+    {
+      "id": "samplerate", "name": "Sample-rate handling", "category": "Engine & Playback", "priority": "P0",
+      "refs": ["logic", "ableton", "reaper", "audacity"],
+      "why": "Mixed-rate material and devices must just work.",
+      "steps": [
+        ["Resample imported audio to the project rate", "verified"],
+        ["Rescale project positions when opened at another rate", "verified"],
+        ["Convert when the device runs at another rate", "implemented"],
+        ["Choose the project sample rate in the UI", "todo"]
+      ],
+      "evidence": "loadResamplesToEngineRate (pitch preserved), loadingAtAnotherSampleRateRescalesPositions."
+    },
+    {
+      "id": "recording", "name": "Audio recording", "category": "Recording", "priority": "P0",
+      "refs": ["logic", "ableton", "reaper", "audacity"],
+      "why": "Core of the owner's workflow. Recording integrity matters more than anything else.",
+      "steps": [
+        ["Input monitoring", "todo"], ["Record-arm tracks", "todo"], ["Crash-safe recording to disk", "todo"],
+        ["Punch in and out", "todo"], ["Latency-compensated takes", "todo"]
+      ],
+      "evidence": "Planned for Phase 2."
+    },
+    {
+      "id": "comping", "name": "Comping and take folders", "category": "Recording", "priority": "P0",
+      "refs": ["logic"],
+      "why": "Logic's swipe comping is the fastest way to build a vocal. Required before the owner switches.",
+      "steps": [
+        ["Loop or cycle recording into takes", "todo"], ["Take lanes", "todo"], ["Swipe comping", "todo"],
+        ["Automatic crossfades between comp segments", "todo"]
+      ],
+      "evidence": "Planned for Phase 4."
+    },
+    {
+      "id": "clipedit", "name": "Non-destructive clip editing", "category": "Editing", "priority": "P0",
+      "refs": ["logic", "ableton", "reaper", "audacity"],
+      "why": "Moving, trimming, and splitting audio is most of editing.",
+      "steps": [
+        ["Move clips, including across tracks", "verified"],
+        ["Trim either edge without touching the source audio", "verified"],
+        ["Split at playhead (⌘T)", "verified"],
+        ["Delete clips", "verified"],
+        ["Fades and crossfades", "todo"],
+        ["Multi-select and keyboard nudge", "todo"]
+      ],
+      "evidence": "UndoAndEditing tests; self-test drives real drags and menu items.",
+      "screenshot": "screenshots/arrangement.png"
+    },
+    {
+      "id": "undo", "name": "Undo and redo", "category": "Editing", "priority": "P0",
+      "refs": ["logic", "ableton", "reaper", "audacity"],
+      "why": "Safe experimentation.",
+      "steps": [
+        ["Named undo for every edit (500 steps)", "verified"],
+        ["A whole drag is one undo step", "verified"],
+        ["Mixer moves are undoable", "verified"],
+        ["Visual history panel", "todo"],
+        ["Undo history saved with the project", "todo"]
+      ],
+      "evidence": "everyEditIsUndoableAndRedoable, groupsCollapseIntoOneStep, gainUndoRestoresAudio."
+    },
+    {
+      "id": "snap", "name": "Grid and snapping", "category": "Editing", "priority": "P0",
+      "refs": ["logic", "ableton", "reaper"],
+      "why": "Musical edits land on the beat.",
+      "steps": [
+        ["Snap to the time grid", "verified"],
+        ["Modifier to bypass snapping (⌃)", "implemented"],
+        ["Bars and beats grid (needs tempo)", "todo"],
+        ["Snap to clip edges and transients", "todo"]
+      ],
+      "evidence": "Self-test: move snapped to grid."
+    },
+    {
+      "id": "flextime", "name": "Flex Time and warping", "category": "Editing", "priority": "P0",
+      "refs": ["logic", "ableton"],
+      "why": "Fix timing and match tempos without re-recording.",
+      "steps": [
+        ["Time-stretch engine (Signalsmith, MIT)", "todo"], ["Transient detection", "todo"],
+        ["Warp markers", "todo"], ["Quality modes", "todo"]
+      ],
+      "evidence": "Planned for Phase 5."
+    },
+    {
+      "id": "flexpitch", "name": "Flex Pitch (note-level pitch editing)", "category": "Editing", "priority": "P0",
+      "refs": ["logic"],
+      "why": "Vocal tuning inside the DAW.",
+      "steps": [["Pitch detection", "todo"], ["Note segmentation", "todo"], ["Pitch and formant editing", "todo"]],
+      "evidence": "Planned for Phase 5."
+    },
+    {
+      "id": "spectral", "name": "Spectral view and repair", "category": "Editing", "priority": "P2",
+      "refs": ["audacity"],
+      "why": "Remove clicks and noise visually.",
+      "steps": [["Spectrogram view", "todo"], ["Spectral selection and attenuation", "todo"], ["Noise reduction", "todo"]],
+      "evidence": "Planned for Phase 6."
+    },
+    {
+      "id": "timeline", "name": "Multitrack arrangement", "category": "Arrangement", "priority": "P0",
+      "refs": ["logic", "ableton", "reaper", "audacity"],
+      "why": "The main canvas.",
+      "steps": [
+        ["Multiple audio tracks with waveforms", "verified"],
+        ["Zoom and scroll (pinch, ⌘-scroll)", "implemented"],
+        ["Overlapping clips: top wins", "verified"],
+        ["Track reordering and deletion in the UI", "todo"],
+        ["Markers and arrangement sections", "todo"],
+        ["Cycle and loop region", "todo"]
+      ],
+      "evidence": "topClipWinsWhenOverlapping; screenshots.",
+      "screenshot": "screenshots/arrangement.png"
+    },
+    {
+      "id": "launcher", "name": "Clip launching (unified with the timeline)", "category": "Arrangement", "priority": "P1",
+      "refs": ["ableton", "logic"],
+      "why": "Sketching and performance without a separate session copy of every track.",
+      "steps": [["Launcher slots on every track", "todo"], ["Quantized launch", "todo"], ["Scenes", "todo"], ["Record a launcher performance to the timeline", "todo"]],
+      "evidence": "Planned for Phase 5."
+    },
+    {
+      "id": "channel", "name": "Track volume, pan, mute, solo", "category": "Mixing", "priority": "P0",
+      "refs": ["logic", "ableton", "reaper", "audacity"],
+      "why": "Basic mixing.",
+      "steps": [
+        ["Volume in dB with smoothing", "verified"],
+        ["Pan (mono constant-power, stereo balance)", "verified"],
+        ["Mute", "verified"],
+        ["Solo", "todo"],
+        ["Volume and pan automation", "todo"]
+      ],
+      "evidence": "gainInDecibels, monoPanIsCompensatedConstantPower, stereoPanIsBalance, gainChangesAreSmoothed."
+    },
+    {
+      "id": "meters", "name": "Metering", "category": "Mixing", "priority": "P1",
+      "refs": ["logic", "ableton", "reaper", "audacity"],
+      "why": "See levels and catch clipping.",
+      "steps": [
+        ["Track and master peak meters", "verified"],
+        ["Peak hold and clip indicator", "implemented"],
+        ["Loudness (LUFS) and RMS", "todo"],
+        ["Spectrum and correlation", "todo"]
+      ],
+      "evidence": "metersReportPostFaderPeaksAndReset; self-test checks the meters during playback.",
+      "screenshot": "screenshots/arrangement.png"
+    },
+    {
+      "id": "mixer", "name": "Mixer window", "category": "Mixing", "priority": "P0",
+      "refs": ["logic", "ableton", "reaper"],
+      "why": "Logic's mixer is a switching requirement.",
+      "steps": [["Channel strips", "todo"], ["Insert slots", "todo"], ["Channel-strip presets", "todo"]],
+      "evidence": "Planned for Phase 4."
+    },
+    {
+      "id": "routing", "name": "Buses, sends, and sidechains", "category": "Mixing", "priority": "P0",
+      "refs": ["logic", "ableton", "reaper"],
+      "why": "Reverb sends, parallel processing, ducking.",
+      "steps": [["Aux buses", "todo"], ["Pre- and post-fader sends", "todo"], ["Sidechain inputs", "todo"], ["Plugin delay compensation", "todo"]],
+      "evidence": "Planned for Phase 4."
+    },
+    {
+      "id": "stacks", "name": "Track stacks and groups", "category": "Mixing", "priority": "P0",
+      "refs": ["logic", "ableton", "reaper"],
+      "why": "Organization and summing.",
+      "steps": [["Folder groups", "todo"], ["Summing groups", "todo"], ["Collapse and expand", "todo"]],
+      "evidence": "Planned for Phase 4."
+    },
+    {
+      "id": "automation", "name": "Automation", "category": "Mixing", "priority": "P0",
+      "refs": ["logic", "ableton", "reaper", "audacity"],
+      "why": "Movement in a mix.",
+      "steps": [["Automation lanes", "todo"], ["Write modes (read, touch, latch)", "todo"], ["Sample-accurate playback", "todo"]],
+      "evidence": "Planned for Phase 4."
+    },
+    {
+      "id": "vst3", "name": "VST3 plugin hosting", "category": "Plugins", "priority": "P0",
+      "refs": ["ableton", "reaper", "audacity"],
+      "why": "The first plugin format (owner's choice). The SDK is MIT-licensed.",
+      "steps": [["Scan and validate", "todo"], ["Load and process", "todo"], ["Save state", "todo"], ["Plugin editor window", "todo"]],
+      "evidence": "Planned for Phase 4."
+    },
+    {
+      "id": "genericui", "name": "Generic in-DAW plugin parameter panel", "category": "Plugins", "priority": "P1",
+      "refs": ["ableton", "reaper"],
+      "why": "Owner request: edit any plugin's parameters without opening its window.",
+      "steps": [["Parameter list", "todo"], ["Search", "todo"], ["Automate and map from the panel", "todo"]],
+      "evidence": "Planned with VST3 hosting."
+    },
+    {
+      "id": "au", "name": "Audio Unit hosting", "category": "Plugins", "priority": "P1",
+      "refs": ["logic", "ableton", "reaper", "audacity"],
+      "why": "Logic users own AU plugins.",
+      "steps": [["Scan", "todo"], ["Load and process", "todo"], ["Save state", "todo"], ["Plugin editor window", "todo"]],
+      "evidence": "Planned for Phase 4."
+    },
+    {
+      "id": "clap", "name": "CLAP hosting", "category": "Plugins", "priority": "P2",
+      "refs": ["reaper"],
+      "why": "Open standard with per-note modulation.",
+      "steps": [["Load and process", "todo"], ["Per-note modulation", "todo"]],
+      "evidence": "Planned."
+    },
+    {
+      "id": "sandbox", "name": "Plugin crash protection", "category": "Plugins", "priority": "P1",
+      "refs": ["reaper"],
+      "why": "One bad plugin must not take down a session.",
+      "steps": [["Out-of-process hosting", "todo"], ["Automatic restart", "todo"]],
+      "evidence": "Planned."
+    },
+    {
+      "id": "stockfx", "name": "Stock effects (EQ, compressor, reverb, delay)", "category": "Instruments & Effects", "priority": "P0",
+      "refs": ["logic", "ableton", "reaper", "audacity"],
+      "why": "A complete mix without buying plugins.",
+      "steps": [["Channel EQ", "todo"], ["Compressor", "todo"], ["Reverb", "todo"], ["Delay", "todo"]],
+      "evidence": "Planned."
+    },
+    {
+      "id": "sampler", "name": "Sampler and instruments", "category": "Instruments & Effects", "priority": "P0",
+      "refs": ["logic", "ableton"],
+      "why": "Composing needs sounds out of the box.",
+      "steps": [["Sampler", "todo"], ["Synth", "todo"], ["Drum instrument", "todo"]],
+      "evidence": "Planned for Phase 3."
+    },
+    {
+      "id": "midi", "name": "MIDI tracks and piano roll", "category": "MIDI", "priority": "P0",
+      "refs": ["logic", "ableton", "reaper"],
+      "why": "Composition.",
+      "steps": [["MIDI tracks", "todo"], ["Piano roll", "todo"], ["Velocity editing", "todo"], ["Quantize", "todo"], ["MIDI recording from a keyboard", "todo"]],
+      "evidence": "Planned for Phase 3."
+    },
+    {
+      "id": "tempo", "name": "Tempo and time signature", "category": "MIDI", "priority": "P0",
+      "refs": ["logic", "ableton", "reaper"],
+      "why": "Bars and beats, click track, tempo changes.",
+      "steps": [["Tempo map", "todo"], ["Meter changes", "todo"], ["Metronome", "todo"]],
+      "evidence": "Planned for Phase 3."
+    },
+    {
+      "id": "palette", "name": "Command palette and discoverability", "category": "Workflow & UI", "priority": "P1",
+      "refs": ["reaper"],
+      "why": "Owner's top complaint about Logic: features hidden in menus.",
+      "steps": [
+        ["⌘K fuzzy search over every command", "verified"],
+        ["Shows menu location and shortcut", "verified"],
+        ["Runs through the same validation as menus", "verified"],
+        ["Ranks recent and frequent commands higher", "todo"]
+      ],
+      "evidence": "Self-test: palette finds 'Split at Playhead' from 'splt plhd' and runs it.",
+      "screenshot": "screenshots/command-palette.png"
+    },
+    {
+      "id": "scripting", "name": "Scripting, macros, and the action system", "category": "Workflow & UI", "priority": "P1",
+      "refs": ["reaper"],
+      "why": "REAPER-level customization, which Logic lacks.",
+      "steps": [
+        ["Named command catalog (JSON API)", "verified"],
+        ["Command-line automation (dalnok-cli)", "verified"],
+        ["Embedded scripting language", "todo"],
+        ["User macros (command sequences)", "todo"]
+      ],
+      "evidence": "CommandCatalog tests; dalnok-cli command and render-project."
+    },
+    {
+      "id": "shortcuts", "name": "Customizable keyboard shortcuts", "category": "Workflow & UI", "priority": "P1",
+      "refs": ["logic", "ableton", "reaper"],
+      "why": "Speed.",
+      "steps": [["Logic-style defaults", "implemented"], ["Shortcut editor", "todo"], ["Presets (Logic, Ableton, Pro Tools)", "todo"]],
+      "evidence": "⌘T split, ⌘B export, Space, ↩, and ⌘K are implemented."
+    },
+    {
+      "id": "themes", "name": "Themes (including analog)", "category": "Workflow & UI", "priority": "P2",
+      "refs": ["logic", "ableton", "reaper"],
+      "why": "Owner wants many options, including a high-end analog look.",
+      "steps": [["Graphite dark theme", "implemented"], ["Light theme", "todo"], ["Analog theme family", "todo"], ["Custom accent color", "todo"]],
+      "evidence": "Screenshots.",
+      "screenshot": "screenshots/empty-state.png"
+    },
+    {
+      "id": "import", "name": "Audio import", "category": "Project & Export", "priority": "P0",
+      "refs": ["logic", "ableton", "reaper", "audacity"],
+      "why": "Getting material in.",
+      "steps": [
+        ["Background decoding, one undo step", "verified"],
+        ["Drag and drop onto the window", "implemented"],
+        ["WAV, AIFF, CAF, MP3, AAC, ALAC, and FLAC via Core Audio", "implemented"],
+        ["Copy media into the project folder", "todo"]
+      ],
+      "evidence": "Self-test import; WAV and AIFF covered by tests; other formats rely on Core Audio decoders and aren't tested yet."
+    },
+    {
+      "id": "projects", "name": "Project save, open, and recovery", "category": "Project & Export", "priority": "P0",
+      "refs": ["logic", "ableton", "reaper", "audacity"],
+      "why": "Never lose work.",
+      "steps": [
+        ["Versioned JSON project, atomic save", "verified"],
+        ["Moved project folders still find their audio", "verified"],
+        ["Missing media loads offline (silent, kept)", "verified"],
+        ["Background open", "verified"],
+        ["Relink missing media", "todo"],
+        ["Autosave and crash recovery", "todo"]
+      ],
+      "evidence": "Persistence and TwoPhaseLoad tests; self-test save, New, and reopen."
+    },
+    {
+      "id": "export", "name": "Export and bounce", "category": "Project & Export", "priority": "P0",
+      "refs": ["logic", "ableton", "reaper", "audacity"],
+      "why": "Deliver the mix.",
+      "steps": [
+        ["WAV export at 16, 24, and 32-bit float", "verified"],
+        ["Export range or cycle selection", "todo"],
+        ["MP3, AAC, and FLAC export", "todo"],
+        ["Stems and render queue", "todo"]
+      ],
+      "evidence": "renderToWavRoundTrips; self-test export decodes to the session length."
+    },
+    {
+      "id": "interchange", "name": "DAWproject interchange", "category": "Project & Export", "priority": "P2",
+      "refs": [],
+      "why": "No lock-in. Move projects between DAWs.",
+      "steps": [["Export DAWproject", "todo"], ["Import DAWproject", "todo"]],
+      "evidence": "Planned for Phase 6."
+    },
+    {
+      "id": "rtsafety", "name": "Real-time safety guarantees", "category": "Reliability & Performance", "priority": "P1",
+      "refs": [],
+      "why": "A differentiator: dropout-free by construction, not by luck.",
+      "steps": [
+        ["Compile-time nonblocking checks on the audio path", "verified"],
+        ["Enforced in CI with a negative test", "verified"],
+        ["Overload (xrun) counter", "implemented"],
+        ["RealtimeSanitizer test job", "todo"]
+      ],
+      "evidence": "scripts/ci/rt-effects.sh; mutation-checked click tests."
+    },
+    {
+      "id": "footprint", "name": "Fast startup and small footprint", "category": "Reliability & Performance", "priority": "P0",
+      "refs": ["reaper"],
+      "why": "REAPER's speed is a big part of its appeal.",
+      "steps": [
+        ["Baseline measured (323 KB binary, 3,051× realtime offline render)", "verified"],
+        ["Performance budgets checked in CI", "todo"],
+        ["Large-session benchmark", "todo"]
+      ],
+      "evidence": "08 - Testing and Benchmarks/Baseline 2026-11-16."
+    }
+  ]
+}
