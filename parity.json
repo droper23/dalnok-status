@@ -1,7 +1,7 @@
 {
   "product": "Dalnok",
   "updated": "2026-11-16",
-  "milestone": "Migration + Time stretch (M6)",
+  "milestone": "UI pass 1 (M7)",
   "rubric": "Each feature is split into concrete steps. A verified step (backed by an automated test, the app's end-to-end self-test, or a measured benchmark) counts 1. An implemented-but-unverified step counts 0.5. Planned steps count 0. Feature % = step score ÷ steps. Overall parity weights features by priority (P0 = 3, P1 = 2, P2 = 1). A reference DAW's parity covers only the features that DAW has.",
   "references": {
     "logic": "Logic Pro",
@@ -26,7 +26,7 @@
   "screenshots": [
     {
       "file": "screenshots/arrangement.png",
-      "caption": "Arrangement during playback: waveforms, live track and master meters, playhead, status line with the output device."
+      "caption": "Arrangement: rainbow track colors from green, faders with audio taper, pan knobs, M/S chips, vertical meters, control bar in the title bar."
     },
     {
       "file": "screenshots/command-palette.png",
@@ -34,7 +34,7 @@
     },
     {
       "file": "screenshots/empty-state.png",
-      "caption": "Empty project: drop audio anywhere or press ⌘I."
+      "caption": "Empty project: a drop zone with Import Audio, Open Project, and Bring Projects from Another DAW."
     },
     {
       "file": "screenshots/welcome.png",
@@ -50,6 +50,73 @@
     }
   ],
   "features": [
+    {
+      "id": "track-colors",
+      "name": "Track color system",
+      "category": "Workflow & UI",
+      "priority": "P1",
+      "refs": [
+        "logic",
+        "ableton",
+        "reaper"
+      ],
+      "why": "Color is how you find 'the vocals'. It should be beautiful, consistent and stable.",
+      "steps": [
+        [
+          "Rainbow gradient from green (OKLCH, equal brightness, alternating lightness for color-blind users)",
+          "verified"
+        ],
+        [
+          "Clips, waveforms, faders and pan derive from the track color; text contrast picked automatically",
+          "verified"
+        ],
+        [
+          "Custom colors and Recolor Tracks as Gradient",
+          "verified"
+        ],
+        [
+          "Group or section colors tint their member tracks",
+          "todo"
+        ]
+      ],
+      "evidence": "TrackColors tests; self-test checks the hue progression and the color menus.",
+      "screenshot": "screenshots/arrangement.png"
+    },
+    {
+      "id": "mixer-controls",
+      "name": "Pro track-header controls",
+      "category": "Workflow & UI",
+      "priority": "P0",
+      "refs": [
+        "logic",
+        "ableton",
+        "reaper"
+      ],
+      "why": "Faders and knobs should feel like an instrument, not a settings page.",
+      "steps": [
+        [
+          "Fader with audio taper, value bubble, ⌥-click or double-click reset, ⇧ fine-adjust, scroll, arrow keys",
+          "verified"
+        ],
+        [
+          "Rotary pan knob with center detent",
+          "verified"
+        ],
+        [
+          "M/S chips with pro state colors; vertical stereo meters",
+          "verified"
+        ],
+        [
+          "VoiceOver roles, values, and increment/decrement",
+          "implemented"
+        ],
+        [
+          "Resizable track heights",
+          "todo"
+        ]
+      ],
+      "evidence": "Self-test drives the fader and knob with synthesized mouse events, then undoes."
+    },
     {
       "id": "imp-reaper",
       "name": "Import REAPER projects (.rpp)",
@@ -1245,8 +1312,8 @@
       "why": "Owner wants many options, including a high-end analog look.",
       "steps": [
         [
-          "Graphite dark theme",
-          "implemented"
+          "Graphite dark theme with documented tokens (4-pt grid, type scale)",
+          "verified"
         ],
         [
           "Light theme",
@@ -1261,7 +1328,7 @@
           "todo"
         ]
       ],
-      "evidence": "Screenshots.",
+      "evidence": "06 - Design/UI Audit 2026-11-16; screenshots.",
       "screenshot": "screenshots/empty-state.png"
     },
     {
