@@ -1,7 +1,7 @@
 {
   "product": "Dalnok",
   "updated": "2026-11-16",
-  "milestone": "Phase 1 complete + Migration (M5)",
+  "milestone": "Migration + Time stretch (M6)",
   "rubric": "Each feature is split into concrete steps. A verified step (backed by an automated test, the app's end-to-end self-test, or a measured benchmark) counts 1. An implemented-but-unverified step counts 0.5. Planned steps count 0. Feature % = step score ÷ steps. Overall parity weights features by priority (P0 = 3, P1 = 2, P2 = 1). A reference DAW's parity covers only the features that DAW has.",
   "references": {
     "logic": "Logic Pro",
@@ -81,15 +81,15 @@
           "verified"
         ],
         [
-          "Items with changed playback rate (needs time-stretch)",
-          "todo"
+          "Playback rate and pitch (time-stretched to match)",
+          "verified"
         ],
         [
           "MIDI, FX, automation (arrive with Phases 3–4)",
           "todo"
         ]
       ],
-      "evidence": "ReaperImport and MediaRelocation tests; local run on the owner's REAPER projects; self-test imports an RPP end to end."
+      "evidence": "ReaperImport and MediaRelocation tests; local run on the owner's REAPER projects; self-test imports an RPP end to end. reaperPlayrateBecomesStretch."
     },
     {
       "id": "imp-ableton",
@@ -118,15 +118,15 @@
           "verified"
         ],
         [
-          "Warped clips needing time-stretch",
-          "todo"
+          "Warped clips: piecewise stretch per warp marker; Re-Pitch and transpose",
+          "verified"
         ],
         [
           "Session clips, take lanes, MIDI, devices",
           "todo"
         ]
       ],
-      "evidence": "AbletonImport tests; local survey of the owner's Live 11/12 sets."
+      "evidence": "AbletonImport tests; local survey of the owner's Live 11/12 sets. abletonWarpMarkersBecomePiecewiseStretch; a real set with 334 stretched clips imports in 1.7 s."
     },
     {
       "id": "imp-logic",
@@ -287,6 +287,10 @@
         ],
         [
           "Click-free play, pause, and seek (5 ms fades)",
+          "verified"
+        ],
+        [
+          "Background rendering for stretched clips (audio thread stays copy-only)",
           "verified"
         ],
         [
@@ -558,23 +562,27 @@
       "why": "Fix timing and match tempos without re-recording.",
       "steps": [
         [
-          "Time-stretch engine (Signalsmith, MIT)",
+          "Time-stretch engine (Signalsmith Stretch, MIT)",
+          "verified"
+        ],
+        [
+          "Whole-clip stretch: ⌥-drag, Double/Half Speed",
+          "verified"
+        ],
+        [
+          "Imported warp markers and playback rates play correctly",
+          "verified"
+        ],
+        [
+          "Flex/warp markers editable in the clip",
           "todo"
         ],
         [
           "Transient detection",
           "todo"
-        ],
-        [
-          "Warp markers",
-          "todo"
-        ],
-        [
-          "Quality modes",
-          "todo"
         ]
       ],
-      "evidence": "Planned for Phase 5."
+      "evidence": "TimeStretch tests measure pitch (±1%) and level (±1.5 dB) on rendered output; mutation-checked. Self-test ⌥-drag."
     },
     {
       "id": "flexpitch",
@@ -587,6 +595,10 @@
       "why": "Vocal tuning inside the DAW.",
       "steps": [
         [
+          "Whole-clip transpose (semitones, formant-free)",
+          "verified"
+        ],
+        [
           "Pitch detection",
           "todo"
         ],
@@ -595,11 +607,11 @@
           "todo"
         ],
         [
-          "Pitch and formant editing",
+          "Per-note pitch and formant editing",
           "todo"
         ]
       ],
-      "evidence": "Planned for Phase 5."
+      "evidence": "transposeKeepsLength: +12 semitones measured at 880 Hz with length unchanged."
     },
     {
       "id": "spectral",
