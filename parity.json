@@ -1,7 +1,7 @@
 {
   "product": "Dalnok",
   "updated": "2026-11-16",
-  "milestone": "Phase 1 complete (M4)",
+  "milestone": "Phase 1 complete + Migration (M5)",
   "rubric": "Each feature is split into concrete steps. A verified step (backed by an automated test, the app's end-to-end self-test, or a measured benchmark) counts 1. An implemented-but-unverified step counts 0.5. Planned steps count 0. Feature % = step score ÷ steps. Overall parity weights features by priority (P0 = 3, P1 = 2, P2 = 1). A reference DAW's parity covers only the features that DAW has.",
   "references": {
     "logic": "Logic Pro",
@@ -10,6 +10,7 @@
     "audacity": "Audacity"
   },
   "categories": [
+    "Migration & Onboarding",
     "Engine & Playback",
     "Recording",
     "Editing",
@@ -34,9 +35,235 @@
     {
       "file": "screenshots/empty-state.png",
       "caption": "Empty project: drop audio anywhere or press ⌘I."
+    },
+    {
+      "file": "screenshots/welcome.png",
+      "caption": "First run: pick the DAW you're coming from. Dalnok adopts its shortcuts and vocabulary."
+    },
+    {
+      "file": "screenshots/concept-guide.png",
+      "caption": "Concept Guide: each Logic, Ableton or REAPER idea, its Dalnok equivalent, and its status."
+    },
+    {
+      "file": "screenshots/palette-other-daw-words.png",
+      "caption": "⌘K understands other DAWs' words: 'bounce' finds Export Mix."
     }
   ],
   "features": [
+    {
+      "id": "imp-reaper",
+      "name": "Import REAPER projects (.rpp)",
+      "category": "Migration & Onboarding",
+      "priority": "P0",
+      "refs": [
+        "reaper"
+      ],
+      "why": "Bring existing REAPER work over without re-building sessions.",
+      "steps": [
+        [
+          "Tracks: name, volume, pan, mute, solo",
+          "verified"
+        ],
+        [
+          "Items: position, length, source offset, fades, item volume",
+          "verified"
+        ],
+        [
+          "Looped items expanded",
+          "verified"
+        ],
+        [
+          "Windows paths and moved project folders resolved",
+          "verified"
+        ],
+        [
+          "Tested on real projects (6/6, all audio found)",
+          "verified"
+        ],
+        [
+          "Items with changed playback rate (needs time-stretch)",
+          "todo"
+        ],
+        [
+          "MIDI, FX, automation (arrive with Phases 3–4)",
+          "todo"
+        ]
+      ],
+      "evidence": "ReaperImport and MediaRelocation tests; local run on the owner's REAPER projects; self-test imports an RPP end to end."
+    },
+    {
+      "id": "imp-ableton",
+      "name": "Import Ableton Live sets (.als)",
+      "category": "Migration & Onboarding",
+      "priority": "P0",
+      "refs": [
+        "ableton"
+      ],
+      "why": "Arrangement audio from Live sets, with levels, clip gain and fades.",
+      "steps": [
+        [
+          "Arrangement audio clips, beats converted to time",
+          "verified"
+        ],
+        [
+          "Unwarped and 1:1-warped clips, loops",
+          "verified"
+        ],
+        [
+          "Live path types, Backup/ sets, moved archives (95% of 6,929 real file references resolved)",
+          "verified"
+        ],
+        [
+          "Tested on real sets (493/495 parse)",
+          "verified"
+        ],
+        [
+          "Warped clips needing time-stretch",
+          "todo"
+        ],
+        [
+          "Session clips, take lanes, MIDI, devices",
+          "todo"
+        ]
+      ],
+      "evidence": "AbletonImport tests; local survey of the owner's Live 11/12 sets."
+    },
+    {
+      "id": "imp-logic",
+      "name": "Import Logic Pro projects",
+      "category": "Migration & Onboarding",
+      "priority": "P0",
+      "refs": [
+        "logic"
+      ],
+      "why": "The owner's main DAW. Bring Logic projects over.",
+      "steps": [
+        [
+          "Final Cut Pro XML (Logic's documented export) import",
+          "verified"
+        ],
+        [
+          "Real Logic FCPXML export tested",
+          "todo"
+        ],
+        [
+          ".logicx: metadata, audio files, region trims (30 real projects)",
+          "verified"
+        ],
+        [
+          ".logicx: region placement on tracks (decoded, unverified)",
+          "implemented"
+        ],
+        [
+          ".logicx: track names, take folders, MIDI",
+          "todo"
+        ]
+      ],
+      "evidence": "FcpxmlImport and LogicImport tests; region trims fit their source files for 2,667/2,667 regions in real projects."
+    },
+    {
+      "id": "imp-stems",
+      "name": "Import a folder of stems",
+      "category": "Migration & Onboarding",
+      "priority": "P1",
+      "refs": [
+        "logic",
+        "ableton",
+        "reaper",
+        "audacity"
+      ],
+      "why": "Works from any DAW's stem export.",
+      "steps": [
+        [
+          "Tracks aligned at zero, common name prefix stripped",
+          "verified"
+        ]
+      ],
+      "evidence": "StemsImport test; self-test."
+    },
+    {
+      "id": "migration-report",
+      "name": "Migration report",
+      "category": "Migration & Onboarding",
+      "priority": "P1",
+      "refs": [],
+      "why": "Users know exactly what came over and what didn't.",
+      "steps": [
+        [
+          "Counts by reason (MIDI, plugins, automation, stretch…)",
+          "verified"
+        ],
+        [
+          "Plain-language explanations with timelines",
+          "verified"
+        ],
+        [
+          "Preview before importing",
+          "verified"
+        ]
+      ],
+      "evidence": "Import tests check report keys; self-test checks the explanation text."
+    },
+    {
+      "id": "onboarding",
+      "name": "'Coming from…' onboarding and shortcut presets",
+      "category": "Migration & Onboarding",
+      "priority": "P1",
+      "refs": [
+        "logic",
+        "ableton",
+        "reaper"
+      ],
+      "why": "Familiar shortcuts on day one.",
+      "steps": [
+        [
+          "First-run choice of Logic, Ableton or REAPER",
+          "verified"
+        ],
+        [
+          "Shortcut presets with no collisions",
+          "verified"
+        ],
+        [
+          "Project finder (Spotlight) with import preview",
+          "verified"
+        ],
+        [
+          "Batch-convert many projects",
+          "todo"
+        ]
+      ],
+      "evidence": "Self-test: presets checked for expected keys and collisions; finder scan; welcome flow.",
+      "screenshot": "screenshots/welcome.png"
+    },
+    {
+      "id": "vocab",
+      "name": "Old-DAW vocabulary and Concept Guide",
+      "category": "Migration & Onboarding",
+      "priority": "P1",
+      "refs": [
+        "logic",
+        "ableton",
+        "reaper"
+      ],
+      "why": "Find features using the words you already know.",
+      "steps": [
+        [
+          "⌘K matches other DAWs' terms (bounce, region, collect all and save…)",
+          "verified"
+        ],
+        [
+          "Planned features appear with their status",
+          "verified"
+        ],
+        [
+          "Concept Guide per DAW",
+          "verified"
+        ]
+      ],
+      "evidence": "Self-test palette and guide checks.",
+      "screenshot": "screenshots/concept-guide.png"
+    },
     {
       "id": "engine",
       "name": "Low-latency playback engine",
@@ -234,6 +461,10 @@
         ],
         [
           "Delete clips",
+          "verified"
+        ],
+        [
+          "Clip (region/item) gain",
           "verified"
         ],
         [
