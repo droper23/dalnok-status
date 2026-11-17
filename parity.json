@@ -1405,11 +1405,11 @@
           "verified"
         ],
         [
-          "Autosave and crash recovery",
-          "todo"
+          "Periodic recovery snapshots and manual restore (crash and timer validation pending)",
+          "implemented"
         ]
       ],
-      "evidence": "Persistence and TwoPhaseLoad tests; self-test save, New, and reopen. relinkBringsOfflineClipsBack; self-test relinks by searching a folder."
+      "evidence": "Persistence and TwoPhaseLoad tests; self-test save, New, and reopen. relinkBringsOfflineClipsBack; self-test relinks by searching a folder. Recovery snapshot and restore are covered by the app self-test; automatic timing and crash recovery are not yet validated."
     },
     {
       "id": "export",
