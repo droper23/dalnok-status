@@ -34,7 +34,7 @@
     },
     {
       "file": "screenshots/empty-state.png",
-      "caption": "Empty project: a drop zone with Import Audio, Open Project, and Bring Projects from Another DAW."
+      "caption": "Empty project: a drop zone with Import Audio, Open Project, and Migration Assistant."
     },
     {
       "file": "screenshots/welcome.png",
@@ -205,6 +205,10 @@
       ],
       "why": "The owner's main DAW. Bring Logic projects over.",
       "steps": [
+        [
+          "Open supports Logic project packages and asks before import",
+          "implemented"
+        ],
         [
           "Final Cut Pro XML (Logic's documented export) import",
           "verified"
