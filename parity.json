@@ -42,7 +42,7 @@
     },
     {
       "file": "screenshots/warm-analog.png",
-      "caption": "Warm Analog: the same layout as hardware — LED buttons, metal knobs with LED rings, LED ladder meters, a VFD position display, masking-tape track names, and plug-ins as rack units joined by patch cables."
+      "caption": "Warm Analog: the same layout as hardware — LED buttons, metal knobs with LED rings, LED ladder meters, a VFD position display, lit scribble-strip track names, and plug-ins as rack units joined by patch cables."
     },
     {
       "file": "screenshots/settings.png",
@@ -143,7 +143,7 @@
           "todo"
         ]
       ],
-      "evidence": "Self-test checks live gain-halo levels, drives both knobs with synthesized mouse events, then undoes."
+      "evidence": "Self-test checks live gain-halo levels, drives both knobs with synthesized mouse events, then undoes. Accessibility: knobs and faders are sliders with values and increment/decrement; arrangement clips and launcher scenes/slots are exposed as buttons with track, position, length and state, and the self-test presses a clip through its accessibility element to select it. Not yet checked with VoiceOver itself."
     },
     {
       "id": "imp-reaper",
@@ -250,15 +250,15 @@
           "verified"
         ],
         [
-          ".logicx: region placement on tracks (decoded, unverified)",
-          "implemented"
+          ".logicx: audio region placement and track names/order",
+          "verified"
         ],
         [
-          ".logicx: track names, take folders, MIDI",
+          ".logicx: mixer settings, routing, take folders, MIDI and automation",
           "todo"
         ]
       ],
-      "evidence": "FcpxmlImport and LogicImport tests; region trims fit their source files for 2,667/2,667 regions in real projects."
+      "evidence": "LogicImport generated-fixture tests cover region IDs, placement, names and order; FcpxmlImport tests cover XML."
     },
     {
       "id": "imp-stems",
@@ -518,15 +518,19 @@
           "todo"
         ],
         [
-          "Punch in and out",
-          "todo"
+          "Punch in and out (autopunch range; sample-accurate)",
+          "verified"
         ],
         [
-          "Separate input and output devices; multiple armed audio tracks",
+          "Multiple armed audio tracks, each recording its own input (one take each, one undo step)",
+          "verified"
+        ],
+        [
+          "Separate input and output devices",
           "todo"
         ]
       ],
-      "evidence": "RecordingTests: bit-exact take contents, latency placement, undo/redo, save and reopen, interrupted takes, journal recovery and monitoring on the simulated input. scripts/ci/record-crash.sh kills a real-time take at three points and verifies every recovered sample. App self-test records through the real menus. Scarlett Solo 4th Gen at 44.1 kHz: 10 s and 120 s takes via dalnok-cli record, 0 dropped frames. Latency compensation uses the device's reported figures (1,186 frames on the Solo) and has not been checked with a loopback measurement; monitoring was not checked by ear."
+      "evidence": "RecordingTests: bit-exact take contents, latency placement, undo/redo, save and reopen, interrupted takes, journal recovery and monitoring on the simulated input. scripts/ci/record-crash.sh kills a real-time take at three points and verifies every recovered sample. App self-test records through the real menus. Scarlett Solo 4th Gen at 44.1 kHz: 10 s and 120 s takes via dalnok-cli record, 0 dropped frames. Latency compensation uses the device's reported figures (1,186 frames on the Solo) and has not been checked with a loopback measurement; monitoring was not checked by ear. PunchTests: a mid-block punch window records exactly its frames, count-in pre-roll starts the take at the record point (also when requested while playing), and count-in clicks stop at the record point; the self-test records with count-in and autopunch through the Transport menu. MultiInputTests: two armed tracks on inputs 1 and 3 each get exactly their input's samples, one undo removes both, and a failed multi-track take recovers one file per track (repeatably); the self-test records two armed tracks through the menus. Not yet run on the Scarlett with both inputs."
     },
     {
       "id": "comping",
@@ -539,23 +543,27 @@
       "why": "Logic's swipe comping is the fastest way to build a vocal. Required before the owner switches.",
       "steps": [
         [
-          "Loop or cycle recording into takes",
-          "todo"
+          "Cycle recording into takes (one take per pass, a take folder per armed track)",
+          "verified"
         ],
         [
-          "Take lanes",
-          "todo"
+          "Take lanes (in the Takes window; not yet expanded inside the arrangement)",
+          "implemented"
         ],
         [
-          "Swipe comping",
-          "todo"
+          "Swipe comping, click a take for all of it, one undo step per swipe",
+          "verified"
         ],
         [
           "Automatic crossfades between comp segments",
-          "todo"
+          "implemented"
+        ],
+        [
+          "Make a take folder from overlapping clips",
+          "verified"
         ]
       ],
-      "evidence": "Planned for Phase 4."
+      "evidence": "TakeFolderTests: a 2.5-pass cycle take becomes three takes with exact offsets, the newest pass plays where it exists, a comp change plays the chosen take's exact samples and undoes in one step, invalid comps are rejected, folders survive save/reopen (format 7), and a folder made from two clips comps them. App self-test: cycle recording through the menus makes a folder of 3 takes, double-clicking the comp opens the Takes window, a swipe across Take 1 and a click on Take 2 change the comp, and undo restores it. Crossfades are 256-frame equal-power fades into the following piece; not yet judged by ear. Edits to comp pieces in the arrangement are replaced on the next comp change."
     },
     {
       "id": "clipedit",
@@ -596,10 +604,10 @@
         ],
         [
           "Multi-select and keyboard nudge",
-          "todo"
+          "verified"
         ]
       ],
-      "evidence": "UndoAndEditing and Fades tests (crossfade weights checked numerically); self-test drives real drags, fade handles, and menu items.",
+      "evidence": "UndoAndEditing and Fades tests (crossfade weights checked numerically); self-test drives real drags, fade handles, and menu items. GUI self-test verifies shift-selection, marquee selection across tracks, group nudge/drag/delete and undo; group drag is horizontal only.",
       "screenshot": "screenshots/arrangement.png"
     },
     {
@@ -659,8 +667,8 @@
           "implemented"
         ],
         [
-          "Bars and beats grid (needs tempo)",
-          "todo"
+          "Bars and beats grid, following tempo and meter changes",
+          "verified"
         ],
         [
           "Snap to clip edges and transients",
@@ -791,8 +799,8 @@
           "todo"
         ],
         [
-          "Cycle and loop region",
-          "todo"
+          "Cycle region: sample-exact loop playback, ruler band, C",
+          "verified"
         ]
       ],
       "evidence": "topClipWinsWhenOverlapping; screenshots.",
@@ -810,23 +818,35 @@
       "why": "Sketching and performance without a separate session copy of every track.",
       "steps": [
         [
-          "Launcher slots on every track",
-          "todo"
+          "Launcher slots on every track, beside the timeline lane (View > Clip Launcher, cmd-L)",
+          "verified"
         ],
         [
-          "Quantized launch",
-          "todo"
+          "Quantized launch (next bar, sample-exact) and looping; stop back to the arrangement",
+          "verified"
         ],
         [
           "Scenes",
-          "todo"
+          "verified"
         ],
         [
           "Record a launcher performance to the timeline",
-          "todo"
+          "verified"
+        ],
+        [
+          "Follow actions (next slot or stop after N loops, exact at loop ends)",
+          "verified"
+        ],
+        [
+          "Drag a slot clip onto the timeline",
+          "verified"
+        ],
+        [
+          "Record into slots (trimmed to whole bars); drag timeline clips into slots",
+          "verified"
         ]
       ],
-      "evidence": "Planned for Phase 5."
+      "evidence": "LauncherTests: launching while playing switches exactly on the next bar and loops every clip length, stopping returns to the arrangement on a later bar, launching while stopped starts the transport, exports play the arrangement only, scenes launch every filled track. App self-test: View > Clip Launcher, clicking an empty slot copies the selected clip, clicking launches it and clicking again stops it on the bar, undo. LauncherFollowAndRecord: next-slot and stop follow actions switch on the exact loop end; recording a performance writes loop passes into the arrangement from the launch frame (one undo step). Self-test: follow action from the slot menu, dragging a slot onto the timeline, Transport > Record Launcher to Arrangement. RecordIntoSlot: a take started mid-bar lands in the target slot as the one whole bar it covers (offset 86,000, length 96,000, sample-exact), nothing stays in the arrangement, one undo removes it. Self-test: dragging an arrangement clip into a slot copies it and leaves the clip in place; an empty slot's menu sets and clears the record target. Launch quantization is one bar."
     },
     {
       "id": "channel",
@@ -910,11 +930,15 @@
       "why": "Logic's mixer is a switching requirement.",
       "steps": [
         [
-          "Channel strips",
-          "todo"
+          "Channel strips: output, sends, pan, vertical fader with meter, mute/solo/arm, name (View > Mixer, X)",
+          "verified"
         ],
         [
           "Insert slots",
+          "todo"
+        ],
+        [
+          "Master strip",
           "todo"
         ],
         [
@@ -922,7 +946,7 @@
           "todo"
         ]
       ],
-      "evidence": "Planned for Phase 4."
+      "evidence": "App self-test: View > Mixer shows a strip per track, Track > New Bus adds a strip, the strip's output menu and + Send route a track, a fader drag lowers the volume as one undo step, and deleting a bus removes its sends. Reviewed in both themes with --uiwalk (including mid-drag). Inserts are still edited in the device panel."
     },
     {
       "id": "routing",
@@ -937,23 +961,31 @@
       "why": "Reverb sends, parallel processing, ducking.",
       "steps": [
         [
-          "Aux buses",
-          "todo"
+          "Aux buses and track outputs (feedback loops rejected)",
+          "verified"
         ],
         [
           "Pre- and post-fader sends",
-          "todo"
+          "verified"
         ],
         [
-          "Sidechain inputs",
-          "todo"
+          "Solo follows routing (soloing a bus keeps its sources; soloing a source keeps its buses)",
+          "verified"
         ],
         [
-          "Plugin delay compensation",
-          "todo"
+          "Sidechain inputs (VST3 auxiliary bus; source chosen on the device card)",
+          "verified"
+        ],
+        [
+          "Sidechain inputs for Audio Units (second input bus) and CLAP (second audio port)",
+          "implemented"
+        ],
+        [
+          "Plugin delay compensation (tracks, buses and sends; live and exports)",
+          "verified"
         ]
       ],
-      "evidence": "Planned for Phase 4."
+      "evidence": "DelayCompensationTests (test VST3 that delays by exactly its reported 300 frames): a latent insert stays sample-aligned with other tracks, a latent bus and a send into it arrive together with the direct paths, and live playback puts the impulse exactly at the playhead. RoutingTests (offline renders, 1e-4 tolerance): output through a bus applies its fader and balance pan; post-fader and pre-fader sends add the expected levels; mute silences pre-fader sends; chained buses; solo through routing; feedback and clips on buses rejected; deleting a bus returns its sources to the master and undo restores the routing; routing survives save/reopen (format 5) and a looping file is rejected. TSan clean on the live render path tests. Live MIDI input played while stopped still goes straight to the master."
     },
     {
       "id": "stacks",
@@ -972,15 +1004,19 @@
           "todo"
         ],
         [
-          "Summing groups",
-          "todo"
+          "Summing stacks (stack bus, members routed in, fader and plug-ins act on all)",
+          "verified"
         ],
         [
-          "Collapse and expand",
-          "todo"
+          "Collapse and expand (saved)",
+          "verified"
+        ],
+        [
+          "Nested stacks",
+          "verified"
         ]
       ],
-      "evidence": "Planned for Phase 4."
+      "evidence": "TrackStacks engine test: the stack sums its members, its fader scales only them, order and routing, collapse flag, ungroup and undo. stacksNest engine test: nested routing and faders (1e-4 tolerance), ordering, ungroup, deletion, undo and save/reopen. App self-test: create, collapse, expand and undo nested stacks; mixer output menus retain identically named stacks."
     },
     {
       "id": "automation",
@@ -996,19 +1032,23 @@
       "why": "Movement in a mix.",
       "steps": [
         [
-          "Automation lanes",
-          "todo"
+          "Volume and pan automation drawn over each lane (View > Show Automation, A): add, move, delete points",
+          "verified"
         ],
         [
-          "Write modes (read, touch, latch)",
-          "todo"
+          "Plug-in parameter automation (block-rate; plug-in window > Automate in Arrangement)",
+          "verified"
         ],
         [
-          "Sample-accurate playback",
-          "todo"
+          "Write modes (read, touch, latch) for volume and pan from header knobs and mixer faders",
+          "verified"
+        ],
+        [
+          "Smooth playback on a fixed 32-frame ramp grid; live playback equals the export",
+          "verified"
         ]
       ],
-      "evidence": "Planned for Phase 4."
+      "evidence": "AutomationTests: volume follows the fader taper between points (exact values midway and a quarter of the way), held before and after, pan automation, mute still applies, live playback in 333-frame blocks matches the offline export sample for sample, save/reopen (format 6, also at 44.1 kHz) and undo. App self-test adds, drags and deletes points through the timeline and clears a lane from the Track menu. Not yet: plug-in parameter automation, write modes (touch/latch), automation following clip moves."
     },
     {
       "id": "vst3",
@@ -1151,14 +1191,14 @@
         ],
         [
           "Load and process",
-          "todo"
+          "verified"
         ],
         [
           "Per-note modulation",
           "todo"
         ]
       ],
-      "evidence": "PluginDiscovery tests. CLAP descriptors require loading the plugin, so kinds are unknown until the sandboxed scan."
+      "evidence": "PluginDiscovery tests; ClapHosting test (plugin-host.sh) loads a test CLAP gain: exact 0.5 gain, parameter set and display text, automation at 0.25, state through save/reopen."
     },
     {
       "id": "sandbox",
@@ -1288,7 +1328,11 @@
           "verified"
         ],
         [
-          "Marquee selection, note preview while stopped for unarmed tracks, scale and chord tools",
+          "Marquee selection and keyboard step entry",
+          "verified"
+        ],
+        [
+          "Note preview while stopped for unarmed tracks, scale and chord tools",
           "todo"
         ],
         [
@@ -1300,7 +1344,7 @@
           "todo"
         ]
       ],
-      "evidence": "MidiTests: recording, quantize, persistence, split rendering, and a Core MIDI virtual source driving the instrument through a real input port (TSan clean). The app self-test plays live MIDI through the running device, records a note through the menus and quantizes. Input events are stamped at the start of the audio callback that receives them, so timing is up to one buffer late. The Arturia MiniLab has not been played into a recording yet. The piano roll is driven by the GUI self-test with synthesized mouse and key events (add, drag, resize, velocity, transpose, nudge, delete, undo, select all)."
+      "evidence": "MidiTests: recording, quantize, persistence, split rendering, and a Core MIDI virtual source driving the instrument through a real input port (TSan clean). The app self-test plays live MIDI through the running device, records a note through the menus and quantizes. Input events are stamped at the start of the audio callback that receives them, so timing is up to one buffer late. The Arturia MiniLab has not been played into a recording yet. The piano roll is driven by the GUI self-test with synthesized mouse and key events (add, drag, resize, velocity, transpose, nudge, delete, undo, select all). GUI self-test also covers marquee and keyboard step entry. GUI self-test checks group movement at pitch and time boundaries."
     },
     {
       "id": "tempo",
@@ -1319,6 +1363,10 @@
           "verified"
         ],
         [
+          "Constant-tempo edits preserve MIDI beat placement while audio stays time-locked",
+          "verified"
+        ],
+        [
           "Bars-and-beats ruler, grid, snapping and position display",
           "verified"
         ],
@@ -1327,19 +1375,19 @@
           "verified"
         ],
         [
-          "Tempo changes (tempo map)",
-          "todo"
+          "Tempo changes (tempo map): MIDI stays on its beats, audio keeps its time",
+          "verified"
         ],
         [
-          "Meter changes",
-          "todo"
+          "Meter changes (ruler, grid, snapping, metronome accents)",
+          "verified"
         ],
         [
-          "Count-in",
-          "todo"
+          "Count-in (one bar of clicks; take starts at the record point)",
+          "verified"
         ]
       ],
-      "evidence": "MidiTests (tempo validation, persistence, quantize grid) and Metronome tests (click on the exact beat sample, 1.6 kHz accent / 1 kHz beat, silent in offline renders). The self-test edits tempo and meter in the control bar, checks the bars-and-beats position display and toggles the metronome, confirming it reaches the output past the end of the session. One constant tempo only."
+      "evidence": "MidiTests (tempo validation, persistence, quantize grid) and Metronome tests (click on the exact beat sample, 1.6 kHz accent / 1 kHz beat, silent in offline renders). The self-test edits tempo and meter in the control bar, checks the bars-and-beats position display and toggles the metronome, confirming it reaches the output past the end of the session. Offline-render MIDI tests verify tempo edits, split-note continuity, undo and reopening. TempoMaps tests: notes crossing a tempo change keep their beats (exact frames), clips after it move, quantize follows the map, the metronome clicks on the exact samples and accents the new bars across tempo and meter changes, maps survive save/reopen (also at another sample rate) and damaged maps are rejected. The self-test adds, edits and removes tempo and time-signature changes through the Transport menu and control bar, and checks the ruler, LCD and control bar follow the playhead. Tempo changes are steps (no ramps); importers bring in the first tempo only."
     },
     {
       "id": "palette",
@@ -1461,7 +1509,7 @@
         ],
         [
           "Live theme switching",
-          "todo"
+          "verified"
         ],
         [
           "Additional analog themes",
@@ -1472,7 +1520,7 @@
           "todo"
         ]
       ],
-      "evidence": "UI audit, reviewed screenshots, and app self-tests in both themes. Theme changes require reopening; VoiceOver and all auxiliary windows are not yet verified. Motion: the self-test checks that knobs glide after undo, the record button pulses and the palette fades, and that all of it is instant with Reduce Motion. Warm Analog: the self-test passes all checks in that theme (including the patch-cable count for a two-plug-in chain); visual review from snapshots; see 06 - Design/Warm Analog.",
+      "evidence": "UI audit, reviewed screenshots, and app self-tests in both themes. Live switching: the self-test changes the theme in Settings both ways from each theme; the main window is rebuilt in the new style with the same project, track colours and undo history, settings stays open (a change during recording waits for a relaunch). Warm Analog extras: vintage track palette, tape reels (self-test checks they wind with the playhead), splice-bay Takes window, lit-pin piano roll, walnut mixer cheeks. VoiceOver and all auxiliary windows are not yet verified. Motion: the self-test checks knob glide, record pulse, palette fade, analog lamp warm-up and cool-down, patch-cable settling, and Reduce Motion. Animation timing has not been visually reviewed in motion. Warm Analog: the self-test passes all checks in that theme (including the patch-cable count for a two-plug-in chain); visual review from snapshots; see 06 - Design/Warm Analog.",
       "screenshot": "screenshots/warm-analog.png"
     },
     {
@@ -1565,8 +1613,8 @@
           "verified"
         ],
         [
-          "Export range or cycle selection",
-          "todo"
+          "Export the cycle range",
+          "verified"
         ],
         [
           "MP3, AAC, and FLAC export",
@@ -1588,15 +1636,19 @@
       "why": "No lock-in. Move projects between DAWs.",
       "steps": [
         [
-          "Export DAWproject",
-          "todo"
+          "Export DAWproject (tracks, audio and MIDI clips, fades, warp-marker stretch, volume, pan, mute, solo, outputs, sends, audio files)",
+          "verified"
         ],
         [
-          "Import DAWproject",
+          "Import DAWproject (audio clips, fades, warp-marker stretch, mixer basics; MIDI, plug-ins, automation reported)",
+          "verified"
+        ],
+        [
+          "Plug-in states, automation and MIDI import through DAWproject",
           "todo"
         ]
       ],
-      "evidence": "Planned for Phase 6."
+      "evidence": "DawprojectTests: a generated project exports to a ZIP that /usr/bin/unzip lists and CRC-checks; importing it back restores clip positions, offsets, fades, a 0.5x stretch, track gain and pan, and renders the same audio within 1e-5; MIDI and submix routing are reported. Self-test: File > Export as DAWproject... and the export imports back with every audio clip. Times are written in seconds; one tempo and time signature."
     },
     {
       "id": "rtsafety",
