@@ -26,7 +26,7 @@
   "screenshots": [
     {
       "file": "screenshots/arrangement.png",
-      "caption": "Arrangement: rainbow track colors from green, faders with audio taper, pan knobs, M/S chips, vertical meters, control bar in the title bar."
+      "caption": "Arrangement: rainbow track colors from green, gain and pan knobs, M/S chips, vertical meters, control bar in the title bar."
     },
     {
       "file": "screenshots/command-palette.png",
@@ -67,7 +67,7 @@
           "verified"
         ],
         [
-          "Clips, waveforms, faders and pan derive from the track color; text contrast picked automatically",
+          "Clips, waveforms, gain and pan derive from the track color; text contrast picked automatically",
           "verified"
         ],
         [
@@ -95,11 +95,11 @@
       "why": "Faders and knobs should feel like an instrument, not a settings page.",
       "steps": [
         [
-          "Fader with audio taper, value bubble, ⌥-click or double-click reset, ⇧ fine-adjust, scroll, arrow keys",
+          "Gain knob with audio taper, live post-fader level halo, value bubble, reset, fine-adjust, scroll and arrow keys",
           "verified"
         ],
         [
-          "Rotary pan knob with center detent",
+          "Labeled rotary pan knob with center detent",
           "verified"
         ],
         [
@@ -115,7 +115,7 @@
           "todo"
         ]
       ],
-      "evidence": "Self-test drives the fader and knob with synthesized mouse events, then undoes."
+      "evidence": "Self-test checks live gain-halo levels, drives both knobs with synthesized mouse events, then undoes."
     },
     {
       "id": "imp-reaper",
