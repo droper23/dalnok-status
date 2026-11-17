@@ -458,6 +458,10 @@
       "why": "Core of the owner's workflow. Recording integrity matters more than anything else.",
       "steps": [
         [
+          "Bounded capture buffer tested independently (not yet connected to recording)",
+          "verified"
+        ],
+        [
           "Input monitoring",
           "todo"
         ],
@@ -478,7 +482,7 @@
           "todo"
         ]
       ],
-      "evidence": "Planned for Phase 2."
+      "evidence": "Capture buffer: scripts/ci/capture-ring.sh, including a ThreadSanitizer run. Remaining recording steps are planned."
     },
     {
       "id": "comping",
