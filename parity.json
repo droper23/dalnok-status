@@ -462,6 +462,10 @@
           "verified"
         ],
         [
+          "Recover a stopped mono or stereo capture spool to a new WAV via CLI",
+          "verified"
+        ],
+        [
           "Input monitoring",
           "todo"
         ],
@@ -482,7 +486,7 @@
           "todo"
         ]
       ],
-      "evidence": "Capture buffer: scripts/ci/capture-ring.sh, including a ThreadSanitizer run. Remaining recording steps are planned."
+      "evidence": "Capture buffer: scripts/ci/capture-ring.sh, including a ThreadSanitizer run. CaptureRecovery tests verify WAV sample values and preservation of the source; live recording remains unimplemented."
     },
     {
       "id": "comping",
