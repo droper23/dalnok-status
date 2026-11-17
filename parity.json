@@ -1405,11 +1405,11 @@
           "verified"
         ],
         [
-          "Periodic recovery snapshots and manual restore (crash and timer validation pending)",
-          "implemented"
+          "Periodic recovery snapshots and manual restore after process crash",
+          "verified"
         ]
       ],
-      "evidence": "Persistence and TwoPhaseLoad tests; self-test save, New, and reopen. relinkBringsOfflineClipsBack; self-test relinks by searching a folder. Recovery snapshot and restore are covered by the app self-test; automatic timing and crash recovery are not yet validated."
+      "evidence": "Persistence and TwoPhaseLoad tests; self-test save, New, and reopen. relinkBringsOfflineClipsBack; self-test relinks by searching a folder. Recovery snapshot and manual restore are covered by the app self-test; scripts/ci/recovery-smoke.sh verifies automatic timing and reload after force-stopping an isolated process. Power-loss durability and automatic recovery prompting remain unverified."
     },
     {
       "id": "export",
