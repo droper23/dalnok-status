@@ -985,7 +985,11 @@
           "verified"
         ],
         [
-          "Sidechain inputs for Audio Units (second input bus) and CLAP (second audio port)",
+          "Sidechain input for CLAP (second audio port)",
+          "verified"
+        ],
+        [
+          "Sidechain input for Audio Units (second input bus)",
           "implemented"
         ],
         [
@@ -993,7 +997,7 @@
           "verified"
         ]
       ],
-      "evidence": "DelayCompensationTests (test VST3 that delays by exactly its reported 300 frames): a latent insert stays sample-aligned with other tracks, a latent bus and a send into it arrive together with the direct paths, and live playback puts the impulse exactly at the playhead. RoutingTests (offline renders, 1e-4 tolerance): output through a bus applies its fader and balance pan; post-fader and pre-fader sends add the expected levels; mute silences pre-fader sends; chained buses; solo through routing; feedback and clips on buses rejected; deleting a bus returns its sources to the master and undo restores the routing; routing survives save/reopen (format 5) and a looping file is rejected. TSan clean on the live render path tests. Live MIDI input played while stopped still goes straight to the master."
+      "evidence": "DelayCompensationTests (test VST3 that delays by exactly its reported 300 frames): a latent insert stays sample-aligned with other tracks, a latent bus and a send into it arrive together with the direct paths, and live playback puts the impulse exactly at the playhead. RoutingTests (offline renders, 1e-4 tolerance): output through a bus applies its fader and balance pan; post-fader and pre-fader sends add the expected levels; mute silences pre-fader sends; chained buses; solo through routing; feedback and clips on buses rejected; deleting a bus returns its sources to the master and undo restores the routing; routing survives save/reopen (format 5) and a looping file is rejected. TSan clean on the live render path tests. Live MIDI input played while stopped still goes straight to the master. ClapHosting sidechain fixture: unconnected input is silent, a muted pre-fader key ducks the main signal to the expected level, and disconnect restores it (1e-4 tolerance). Audio Unit sidechain lacks a fixture."
     },
     {
       "id": "stacks",
@@ -1056,7 +1060,7 @@
           "verified"
         ]
       ],
-      "evidence": "AutomationTests: volume follows the fader taper between points (exact values midway and a quarter of the way), held before and after, pan automation, mute still applies, live playback in 333-frame blocks matches the offline export sample for sample, save/reopen (format 6, also at 44.1 kHz) and undo. App self-test adds, drags and deletes points through the timeline and clears a lane from the Track menu. Not yet: plug-in parameter automation, write modes (touch/latch), automation following clip moves."
+      "evidence": "AutomationTests: volume follows the fader taper between points (exact values midway and a quarter of the way), held before and after, pan automation, mute still applies, live playback in 333-frame blocks matches the offline export sample for sample, save/reopen (format 6, also at 44.1 kHz) and undo. App self-test adds, drags and deletes points through the timeline and clears a lane from the Track menu. Plug-in parameter automation and Touch/Latch writing are covered by plug-in hosting and GUI self-tests; generated-audio checks verify the live override remains active across a backward transport jump. Automation following clip moves remains open."
     },
     {
       "id": "vst3",
