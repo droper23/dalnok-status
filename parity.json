@@ -254,11 +254,19 @@
           "verified"
         ],
         [
-          ".logicx: mixer settings, routing, take folders, MIDI and automation",
+          ".logicx: MIDI notes and region boundaries (experimental)",
+          "verified"
+        ],
+        [
+          ".logicx: Audio Units with saved class-info state (experimental)",
+          "verified"
+        ],
+        [
+          ".logicx: Logic-native processors, mixer settings, routing, take folders and automation",
           "todo"
         ]
       ],
-      "evidence": "LogicImport generated-fixture tests cover region IDs, placement, names and order; FcpxmlImport tests cover XML."
+      "evidence": "LogicImport generated fixtures cover placements, MIDI notes and region boundaries. LogicPluginImport generated fixtures verify Audio Unit track assignment, ordering, saved parameter state and instrument playback. Plug-in hosting fixtures verify rejected state preservation and short MIDI notes. Logic-native processors, mixer settings, routing, take folders and automation are not yet imported. FcpxmlImport tests cover XML."
     },
     {
       "id": "imp-stems",
