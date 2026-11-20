@@ -1,6 +1,6 @@
 {
   "product": "Dalnok",
-  "updated": "2026-11-16",
+  "updated": "2026-11-20",
   "milestone": "Recording, MIDI editing and motion (M8–M9)",
   "rubric": "Each feature is split into concrete steps. A verified step (backed by an automated test, the app's end-to-end self-test, or a measured benchmark) counts 1. An implemented-but-unverified step counts 0.5. Planned steps count 0. Feature % = step score ÷ steps. Overall parity weights features by priority (P0 = 3, P1 = 2, P2 = 1). A reference DAW's parity covers only the features that DAW has.",
   "references": {
@@ -264,9 +264,25 @@
         [
           ".logicx: Logic-native processors, mixer settings, routing, take folders and automation",
           "todo"
+        ],
+        [
+          "Mixer volume, pan, mute; muted regions; Drummer notes",
+          "verified"
+        ],
+        [
+          "Logic Channel EQ becomes Dalnok Channel EQ (peak bands and Q-Couple null against Logic)",
+          "verified"
+        ],
+        [
+          "Channel EQ shelves, cuts and HQ verified against Logic",
+          "implemented"
+        ],
+        [
+          "Other Logic effects (Limiter, Chorus, ChromaVerb, ChromaGlow, Drum Kit) as Dalnok plug-ins",
+          "todo"
         ]
       ],
-      "evidence": "LogicImport generated fixtures cover placements, MIDI notes and region boundaries. LogicPluginImport generated fixtures verify Audio Unit track assignment, ordering, saved parameter state and instrument playback. Plug-in hosting fixtures verify rejected state preservation and short MIDI notes. Logic-native processors, mixer settings, routing, take folders and automation are not yet imported. FcpxmlImport tests cover XML."
+      "evidence": "LogicImport generated fixtures cover placements, MIDI notes and region boundaries. LogicPluginImport generated fixtures verify Audio Unit track assignment, ordering, saved parameter state and instrument playback. Plug-in hosting fixtures verify rejected state preservation and short MIDI notes. Logic-native processors, mixer settings, routing, take folders and automation are not yet imported. FcpxmlImport tests cover XML. Channel EQ: tools/logic-parity null tests (-132 to -148 dB, 75 renders) and BuiltinPlugins engine tests."
     },
     {
       "id": "imp-stems",
@@ -1100,10 +1116,14 @@
         ],
         [
           "Plugin editor window (the plug-in's own interface)",
-          "implemented"
+          "verified"
         ],
         [
           "Parameter changes from editors and Dalnok reach the processor",
+          "verified"
+        ],
+        [
+          "Optional crash isolation: each plug-in in its own process, crashes and hangs contained, editors in the plug-in's own window",
           "verified"
         ],
         [
@@ -1115,7 +1135,7 @@
           "todo"
         ]
       ],
-      "evidence": "scripts/ci/plugin-host.sh builds a test VST3 (gain effect, note-driven synth) and checks exact gain, a bit-exact passthrough null test, note on/off on the exact sample across block boundaries, live input, undo/redo, state through save and reopen, and a missing plugin keeping its state (also under ThreadSanitizer). Vital (VST3, third-party) loads as an instrument through the command catalog and renders its notes offline (0.28 RMS during clips, 0.0007 in the gap). Offline renders and exports use separate plugin instances. The app adds and removes VST3 plug-ins from Audio ▸ Plug-ins and the track menu (self-test with the test plugin). Parameters: the test plug-in's processor sees changes only through process(); they apply live from the next block and in exports (replayed into the export's instance). Vital's editor opened inside Dalnok's plug-in window (1440×907 pt, checked by a window capture), with 2,855 parameters in the generic panel; editor edits were not exercised automatically."
+      "evidence": "scripts/ci/plugin-host.sh builds a test VST3 (gain effect, note-driven synth) and checks exact gain, a bit-exact passthrough null test, note on/off on the exact sample across block boundaries, live input, undo/redo, state through save and reopen, and a missing plugin keeping its state (also under ThreadSanitizer). Vital (VST3, third-party) loads as an instrument through the command catalog and renders its notes offline (0.28 RMS during clips, 0.0007 in the gap). Offline renders and exports use separate plugin instances. The app adds and removes VST3 plug-ins from Audio ▸ Plug-ins and the track menu (self-test with the test plugin). Parameters: the test plug-in's processor sees changes only through process(); they apply live from the next block and in exports (replayed into the export's instance). Vital's editor opened inside Dalnok's plug-in window (1440×907 pt, checked by a window capture), with 2,855 parameters in the generic panel; editor edits were not exercised automatically. Crash isolation (ADR-0014, Settings ▸ Plug-ins ▸ Safety, off by default): scripts/ci/plugin-isolation.sh runs the VST3, CLAP and delay-compensation suites with every plug-in in dalnok-plughost (bit-exact against in-process), and a fixture that crashes or hangs mid-session or while loading leaves the engine running, is reported and reloads; about 34 µs per plug-in per block. Editors: engine tests open the test VST3's editor in-process and isolated (pixels, resize, edits), and real-input self-tests click and type in them."
     },
     {
       "id": "genericui",
@@ -1143,9 +1163,17 @@
         [
           "Automate and map from the panel",
           "todo"
+        ],
+        [
+          "Fold units to a narrow strip (on/off and level stay usable; saved, undoable)",
+          "verified"
+        ],
+        [
+          "One Open button per unit; Controls in the plug-in window's title bar",
+          "verified"
         ]
       ],
-      "evidence": "App self-test with the test plug-in: the panel lists its parameter, sets it, shows the plug-in's text, and filters. Works for any VST3 (Vital: 2,855 parameters). Device panel: self-test turns a knob, edits the controller (one undo step), undoes it, and checks the knob follows changes made elsewhere."
+      "evidence": "App self-test with the test plug-in: the panel lists its parameter, sets it, shows the plug-in's text, and filters. Works for any VST3 (Vital: 2,855 parameters). Device panel: self-test turns a knob, edits the controller (one undo step), undoes it, and checks the knob follows changes made elsewhere. Folding and the Open/Controls flow: engine test foldingIsSavedUndoableAndSilent, editorTitleBarControlsReachesDalnok, and the deviceFolding self-test in both themes."
     },
     {
       "id": "au",
@@ -1182,14 +1210,14 @@
         ],
         [
           "Plugin editor window (AUv2 Cocoa views)",
-          "implemented"
+          "verified"
         ],
         [
           "AUv3 view controllers",
           "todo"
         ]
       ],
-      "evidence": "AudioUnitHosting tests with Apple's units: AUDelay dry-only null within 1e-5, wet output delayed 50 ms, state through save/reopen; DLSMusicDevice silent before and sounding during a clip note. App self-test drives AUDelay and AUPeakLimiter in the device panel."
+      "evidence": "AudioUnitHosting tests with Apple's units: AUDelay dry-only null within 1e-5, wet output delayed 50 ms, state through save/reopen; DLSMusicDevice silent before and sounding during a clip note. App self-test drives AUDelay and AUPeakLimiter in the device panel. Editors: AUDelay and AUSampler editors open isolated in engine tests (on screen, settled size); real-input self-test types into AUDelay's field."
     },
     {
       "id": "clap",
@@ -1235,7 +1263,15 @@
           "verified"
         ],
         [
-          "Out-of-process hosting (plugins currently run in the app process)",
+          "Out-of-process hosting, opt-in (Settings ▸ Plug-ins ▸ Safety): each plug-in in its own process with its own editor window",
+          "verified"
+        ],
+        [
+          "Reload a crashed or hung plug-in from its saved state (Load); a crash is not an edit",
+          "verified"
+        ],
+        [
+          "On by default: verified on the owner's plug-in library; blocked until isolated plug-ins on independent tracks process in parallel (ADR-0014)",
           "todo"
         ],
         [
@@ -1243,7 +1279,7 @@
           "todo"
         ]
       ],
-      "evidence": "scripts/ci/plugin-scan.sh: a plugin that aborts is reported as crashed and one that never returns is killed after the timeout."
+      "evidence": "scripts/ci/plugin-isolation.sh (hosting suites isolated, crash/hang fixtures, isolated self-test) and plugin-scan.sh. ADR-0014 records the default-on decision: 24 real projects load every plug-in isolated with the main thread blocked at most 16 ms in 23 of them (in-process: about 1 s); 7 projects whose plug-ins need more than 40 % of each block would drop plug-ins until parallel processing lands."
     },
     {
       "id": "stockfx",
@@ -1521,6 +1557,10 @@
         ],
         [
           "Warm Analog as a hardware overhaul: LED lenses, metal knobs with LED rings, LED ladder meters, VFD, faceplates, scribble strips, patch-cabled rack units (same layout and controls)",
+          "verified"
+        ],
+        [
+          "Warm Analog pedals carry a readout window (turned control's value, gain-reduction ladder, response or trace) and signal LEDs",
           "verified"
         ],
         [
