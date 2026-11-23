@@ -1,6 +1,6 @@
 {
   "product": "Dalnok",
-  "updated": "2026-11-22",
+  "updated": "2026-11-23",
   "milestone": "Recording, MIDI editing and motion (M8–M9)",
   "rubric": "Each feature is split into concrete steps. A verified step (backed by an automated test, the app's end-to-end self-test, or a measured benchmark) counts 1. An implemented-but-unverified step counts 0.5. Planned steps count 0. Feature % = step score ÷ steps. Overall parity weights features by priority (P0 = 3, P1 = 2, P2 = 1). A reference DAW's parity covers only the features that DAW has.",
   "references": {
@@ -344,6 +344,10 @@
           "verified"
         ],
         [
+          "First-run look chooser: a card with a picture per theme, Light | Dark, applied live",
+          "verified"
+        ],
+        [
           "Shortcut presets with no collisions",
           "verified"
         ],
@@ -356,7 +360,7 @@
           "todo"
         ]
       ],
-      "evidence": "Self-test: presets checked for expected keys and collisions; finder scan; welcome flow.",
+      "evidence": "Self-test: presets checked for expected keys and collisions; finder scan; welcome flow. Look step: self-test (cards, pictures, versions, current look marked, then the shortcut step); gallery frame 17-first-launch.",
       "screenshot": "screenshots/welcome.png"
     },
     {
@@ -1187,9 +1191,13 @@
         [
           "One Open button per unit; Controls in the plug-in window's title bar",
           "verified"
+        ],
+        [
+          "Device panel height resizable in every theme (remembered; more rows when tall)",
+          "verified"
         ]
       ],
-      "evidence": "App self-test with the test plug-in: the panel lists its parameter, sets it, shows the plug-in's text, and filters. Works for any VST3 (Vital: 2,855 parameters). Device panel: self-test turns a knob, edits the controller (one undo step), undoes it, and checks the knob follows changes made elsewhere. Folding and the Open/Controls flow: engine test foldingIsSavedUndoableAndSilent, editorTitleBarControlsReachesDalnok, and the deviceFolding self-test in both themes."
+      "evidence": "App self-test with the test plug-in: the panel lists its parameter, sets it, shows the plug-in's text, and filters. Works for any VST3 (Vital: 2,855 parameters). Device panel: self-test turns a knob, edits the controller (one undo step), undoes it, and checks the knob follows changes made elsewhere. Folding and the Open/Controls flow: engine test foldingIsSavedUndoableAndSilent, editorTitleBarControlsReachesDalnok, and the deviceFolding self-test in both themes. Resizing: self-test drags the top edge (taller units, clamped at the base height)."
     },
     {
       "id": "au",
@@ -1606,9 +1614,17 @@
         [
           "Custom accent color",
           "todo"
+        ],
+        [
+          "Atelier figures move (governor, pendulum, crank, clipped wave, chamber), hold under the pointer; parts and key rows light together; drag-direction marks",
+          "verified"
+        ],
+        [
+          "Prism plug-in figures (optics: aperture, caustics, light echoes, refraction, interference; EQ coloured by frequency), moving and linked to their parameters; stock controls drawn in each look",
+          "verified"
         ]
       ],
-      "evidence": "UI audit, reviewed screenshots, and app self-tests in both themes. Live switching: the self-test changes the theme in Settings both ways from each theme; the main window is rebuilt in the new style with the same project, track colours and undo history, settings stays open (a change during recording waits for a relaunch). Warm Analog extras: vintage track palette, tape reels (self-test checks they wind with the playhead), splice-bay Takes window, lit-pin piano roll, walnut mixer cheeks. Motion: the self-test checks knob glide, record pulse, palette fade, analog lamp warm-up and cool-down, patch-cable settling, and Reduce Motion. Animation timing has not been visually reviewed in motion. Warm Analog: the self-test passes all checks in that theme (including the patch-cable count for a two-plug-in chain); visual review from snapshots; see 06 - Design/Warm Analog. Warm Analog control-bar tape strip: GUI self-test checks play, pause, winding and return to zero; real input on a generated project also confirmed PLAY, FF and RTZ. The self-test verifies focused-key Space and wind press/release; real Space and Return toggled LOOP after accessibility focus was set. Prism and Atelier (2026-11-22): the full self-test passes in each theme and version (Prism Dark 908 and Light 889 checks, Atelier Dark 908 and Light 889, at 48 and 44.1 kHz), including switching every theme from View > Theme with the project, zoom and fonts kept, Light/Dark per theme, and Composition Overview keyboard navigation; reviewed from a 13-frame gallery per theme. 2026-11-22: Atelier redrawn as a codex (engraved plates; each plug-in display a figure drawn from live data, reverbs as an acoustic chamber); self-test passes in both versions at both rates. Accessibility pass in all six looks: an automated audit of 13 windows (every control has an accessible name; with Full Keyboard Access, Tab reaches every control and the loop closes) passes in each; it has not been listened to with VoiceOver itself. 2026-11-22 night: Atelier plug-ins as lettered legend plates, engraved glyphs and one serif; the full matrix passes in all six looks at both rates (Atelier 1028 / 1009). Later that night: Atelier plug-ins as one engraving (stations on the signal line, figures dragged by lettered parts, unit instruments in the key); matrix passes in all six looks (Atelier 1033 / 1014), with checks for the governor drag and long insert chains.",
+      "evidence": "UI audit, reviewed screenshots, and app self-tests in both themes. Live switching: the self-test changes the theme in Settings both ways from each theme; the main window is rebuilt in the new style with the same project, track colours and undo history, settings stays open (a change during recording waits for a relaunch). Warm Analog extras: vintage track palette, tape reels (self-test checks they wind with the playhead), splice-bay Takes window, lit-pin piano roll, walnut mixer cheeks. Motion: the self-test checks knob glide, record pulse, palette fade, analog lamp warm-up and cool-down, patch-cable settling, and Reduce Motion. Animation timing has not been visually reviewed in motion. Warm Analog: the self-test passes all checks in that theme (including the patch-cable count for a two-plug-in chain); visual review from snapshots; see 06 - Design/Warm Analog. Warm Analog control-bar tape strip: GUI self-test checks play, pause, winding and return to zero; real input on a generated project also confirmed PLAY, FF and RTZ. The self-test verifies focused-key Space and wind press/release; real Space and Return toggled LOOP after accessibility focus was set. Prism and Atelier (2026-11-22): the full self-test passes in each theme and version (Prism Dark 908 and Light 889 checks, Atelier Dark 908 and Light 889, at 48 and 44.1 kHz), including switching every theme from View > Theme with the project, zoom and fonts kept, Light/Dark per theme, and Composition Overview keyboard navigation; reviewed from a 13-frame gallery per theme. 2026-11-22: Atelier redrawn as a codex (engraved plates; each plug-in display a figure drawn from live data, reverbs as an acoustic chamber); self-test passes in both versions at both rates. Accessibility pass in all six looks: an automated audit of 13 windows (every control has an accessible name; with Full Keyboard Access, Tab reaches every control and the loop closes) passes in each; it has not been listened to with VoiceOver itself. 2026-11-22 night: Atelier plug-ins as lettered legend plates, engraved glyphs and one serif; the full matrix passes in all six looks at both rates (Atelier 1028 / 1009). Later that night: Atelier plug-ins as one engraving (stations on the signal line, figures dragged by lettered parts, unit instruments in the key); matrix passes in all six looks (Atelier 1033 / 1014), with checks for the governor drag and long insert chains. Figure motion and linking: self-test (the governor spins, holds under the pointer, lights its row both ways); gallery frame 15-figures (at rest and mid-motion). Prism figures: self-test drags the aperture's threshold part, checks its motion, hover link and VoiceOver sliders (all six looks × 48/44.1 kHz pass); README plug-in clips recorded live.",
       "screenshot": "screenshots/warm-analog.png"
     },
     {
@@ -1824,9 +1840,21 @@
         [
           "Drawn in every theme's idiom (Atelier: ruled heads, gold bands on the dark plate)",
           "implemented"
+        ],
+        [
+          "Library ▸ Files: project folder, Music, Desktop, Downloads, Home and added folders; folders unfold in place; preview on click; drag or Return imports; search off the main thread",
+          "verified"
+        ],
+        [
+          "Inspector marks the plug-ins in view in the device panel and the one last clicked",
+          "verified"
+        ],
+        [
+          "Start page hides both panels and restores them with the first track",
+          "verified"
         ]
       ],
-      "evidence": "PhaseInvert engine tests (exact negation, sends, undo, save, catalog); SelfTest+Inspector in all four themes, light and dark, at 48 and 44.1 kHz; accessibility audit with both panels open; gallery stills."
+      "evidence": "PhaseInvert engine tests (exact negation, sends, undo, save, catalog); SelfTest+Inspector in all four themes, light and dark, at 48 and 44.1 kHz; accessibility audit with both panels open; gallery stills. Files place, in-view marks and start-page hiding: SelfTest+Inspector / SelfTest+Plugins / start-page checks in all six looks at 48 and 44.1 kHz; gallery frame 16-library-files."
     }
   ]
 }
